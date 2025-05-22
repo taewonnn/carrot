@@ -72,23 +72,24 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/firebase,macos,windows
 
 # 1) 의존성 라이브러리 전체
-node_modules/          # npm 패키지 → 재설치 가능, 용량이 크므로 업로드 불필요
+node_modules/
 
 # 2) 환경 변수·비밀 키
-.env                   # 로컬 환경 변수 파일 → API_KEY, DB 패스워드 등
-*.local.env            # 필요하다면 추가 확장자
+.env
+*.local.env
+
 
 # 3) Firebase Emulator 및 디버그 로그
-.firebase/             # Firebase CLI가 쓰는 캐시/에뮬레이터 데이터
-firebase-debug.log     # 디버그 로그 → 민감 정보 포함 가능
+.firebase/
+firebase-debug.log
 
 # 4) 운영체제·IDE 관련
-.DS_Store              # macOS Finder 메타데이터
-Thumbs.db              # Windows 이미지 미리보기 DB
-.vscode/               # VSCode 설정(개인별 커스터마이징)
-.idea/                 # IntelliJ/WebStorm 설정
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
 # 5) 빌드 산출물
-dist/                  # 빌드 결과물 (예: Webpack, Vite 출력)
-build/                 # CRA나 Next.js 빌드 폴더
-*.log                  # 기타 로그 파일s
+dist/
+build/
+*.log
