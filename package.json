@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.6",
+    "firebase-tools": "^9.23.1"
+  }
+}
