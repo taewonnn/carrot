@@ -16,7 +16,7 @@
     />
     <link rel="stylesheet" href="./main.css" />
 
-    <!-- config.js 파일 로드 (경로 수정) -->
+    <!-- config.js 파일 로드 -->
     <script src="./config.js"></script>
   </head>
   <body>
@@ -31,51 +31,17 @@
     </nav>
 
     <div class="container mt-3">
-      <div class="product"></div>
+      <input type="text" class="form-control mt-2" id="title" placeholder="title" />
+      <textarea class="form-control mt-2" id="content">content</textarea>
+      <input type="text" class="form-control mt-2" id="price" placeholder="price" />
+      <input class="form-control mt-2" type="file" id="image" />
+      <button class="btn btn-danger mt-3" id="send">올리기</button>
     </div>
 
     <!-- Firebase 초기화 스크립트 -->
     <script>
       // Firebase 초기화
       firebase.initializeApp(firebaseConfig);
-    </script>
-
-    <script>
-      // data 가져오기
-      document.addEventListener('DOMContentLoaded', () => {
-        const db = firebase.firestore();
-        console.log('Firestore initialized');
-
-        db.collection('products')
-          .get()
-          .then(snapshot => {
-            console.log('Products retrieved:', snapshot.size);
-            snapshot.docs.forEach(product => {
-              // console
-              console.log('product', product.data());
-
-              // 상품 data
-              const data = product.data();
-
-              // html 동적 생성
-              const template = `
-              <div class="product">
-                <div class="thumbnail" style="background-image: url('./500x500_01.png')"></div>
-                <div class="flex-grow-1 p-4">
-                  <h5 class="title">${data.title}</h5>
-                  <p class="date">${data.date}</p>
-                  <p class="price">${data.price}원</p>
-                  <p class="float-end">${data.price}원</p>
-                </div>
-              </div>
-              `;
-              document.querySelector('.container').innerHTML += template;
-            });
-          })
-          .catch(err => {
-            console.error('Firestore 에러:', err);
-          });
-      });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
