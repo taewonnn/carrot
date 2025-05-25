@@ -53,11 +53,12 @@
       // db.collection('product')
 
       // upload
-      // 'db collection', db.collection('넣을 테이블명').doc.set({넣을 데이터]});
 
-      //db.collection('products')
-      //.doc('product4')
-      // .set({ title: '핸드워시', prcie: 20000, date: '2025-05-27' });
+      // doc.set() -> 문서의 이름을 내가 결정
+      //db.collection('products').doc('product4').set({ title: '핸드워시', prcie: 20000, date: '2025-05-27' });
+
+      // db.collection.add({}) -> 문서의 이름을 알아서 부여
+      // db.collection('products').add({ title: '핸드워시', prcie: 20000, date: '2025-05-27' })
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
