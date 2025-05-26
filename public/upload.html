@@ -31,13 +31,15 @@
       </div>
     </nav>
 
-    <div class="container mt-3">
-      <input type="text" class="form-control mt-2" id="title" placeholder="title" />
-      <textarea class="form-control mt-2" id="content">content</textarea>
-      <input type="text" class="form-control mt-2" id="price" placeholder="price" />
-      <input class="form-control mt-2" type="file" id="image" />
-      <button class="btn btn-danger mt-3" id="send">올리기</button>
-    </div>
+    <form action="">
+      <div class="container mt-3">
+        <input type="text" class="form-control mt-2" id="title" placeholder="title" />
+        <textarea class="form-control mt-2" id="content">content</textarea>
+        <input type="text" class="form-control mt-2" id="price" placeholder="price" />
+        <input class="form-control mt-2" type="file" id="image" />
+        <button class="btn btn-danger mt-3" id="send">올리기</button>
+      </div>
+    </form>
 
     <!-- Firebase 초기화 스크립트 -->
     <script>
@@ -46,21 +48,34 @@
     </script>
 
     <script>
-      const db = firebase.firestore();
+      // form 제출
+      document.querySelector('form').addEventListener('submit', () => {
+        // title
+        const title = document.querySelector('#title');
+        //content
+        const content = document.querySelector('#content');
+        //price
+        const price = document.querySelector('#price');
 
-      // 가져오기
+        const formData = { title: title, content: content, prie: price };
+      });
+
+      // db 가져오기
+      const db = firebase.firestore();
+    </script>
+
+    <script>
+      // firebase
       // firebase DB collection
       // db.collection('product')
 
       // upload
-
       // doc.set() -> 문서의 이름을 내가 결정
       //db.collection('products').doc('product4').set({ title: '핸드워시', prcie: 20000, date: '2025-05-27' });
 
       // db.collection.add({}) -> 문서의 이름을 알아서 부여
       // db.collection('products').add({ title: '핸드워시', prcie: 20000, date: '2025-05-27' })
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
