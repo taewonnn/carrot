@@ -31,15 +31,13 @@
       </div>
     </nav>
 
-    <form action="">
-      <div class="container mt-3">
-        <input type="text" class="form-control mt-2" id="title" placeholder="title" />
-        <textarea class="form-control mt-2" id="content">content</textarea>
-        <input type="text" class="form-control mt-2" id="price" placeholder="price" />
-        <input class="form-control mt-2" type="file" id="image" />
-        <button class="btn btn-danger mt-3" id="send">올리기</button>
-      </div>
-    </form>
+    <div class="container mt-3">
+      <input type="text" class="form-control mt-2" id="title" placeholder="title" />
+      <textarea class="form-control mt-2" id="content">content</textarea>
+      <input type="text" class="form-control mt-2" id="price" placeholder="price" />
+      <input class="form-control mt-2" type="file" id="image" />
+      <button class="btn btn-danger mt-3" id="send">올리기</button>
+    </div>
 
     <!-- Firebase 초기화 스크립트 -->
     <script>
@@ -49,19 +47,23 @@
 
     <script>
       // form 제출
-      document.querySelector('form').addEventListener('submit', () => {
+      document.querySelector('#send').addEventListener('click', () => {
+        console.log('제출!');
         // title
-        const title = document.querySelector('#title');
+        const title = document.querySelector('#title').value;
         //content
-        const content = document.querySelector('#content');
+        const content = document.querySelector('#content').value;
         //price
-        const price = document.querySelector('#price');
+        const price = +document.querySelector('#price').value;
 
         const formData = { title: title, content: content, prie: price };
-      });
+        console.log(formData);
 
-      // db 가져오기
-      const db = firebase.firestore();
+        // db 가져오기
+        const db = firebase.firestore();
+
+        db.collection('products').add(formData);
+      });
     </script>
 
     <script>
