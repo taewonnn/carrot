@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Carrot</title>
+    <title>Carrot - register</title>
 
     <!-- Firebase SDK를 CDN에서 직접 로드 -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -24,9 +24,7 @@
     <!-- nav Bar -->
     <nav class="navbar bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand">carrot</a>
-        <a class="btn btn-outline-success" href="/signin.html">로그인</a>
-        <a class="btn btn-outline-success" href="/signup.html">회원가입</a>
+        <a class="navbar-brand">Navbar</a>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
           <button class="btn btn-outline-success" type="submit">Search</button>
@@ -35,7 +33,16 @@
     </nav>
 
     <div class="container mt-3">
-      <div class="product"></div>
+      <div class="mb-3">
+        <input type="text" class="form-control" placeholder="name" id="name-new" />
+      </div>
+      <div class="mb-3">
+        <input type="email" class="form-control" placeholder="email" id="email-new" />
+      </div>
+      <div class="mb-3">
+        <input type="password" class="form-control" placeholder="pw" id="pw-new" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="register">가입하기</button>
     </div>
 
     <!-- Firebase 초기화 스크립트 -->
@@ -45,42 +52,32 @@
     </script>
 
     <script>
-      // data 가져오기
-      document.addEventListener('DOMContentLoaded', () => {
-        const db = firebase.firestore();
-        // console.log('Firestore initialized');
+      const db = firebase.firestore();
+      const storage = firebase.storage();
 
-        db.collection('products')
-          .get()
-          .then(snapshot => {
-            console.log('Products retrieved:', snapshot.size);
-            snapshot.docs.forEach(product => {
-              // console
-              // console.log('product', product.data());
+      document.querySelector('#register').addEventListener('click', () => {
+        console.log('register click!');
+        // email
+        const email = document.querySelector('#email-new').value;
+        // password
+        const password = document.querySelector('#pw-new').value;
+        // name
+        const username = document.querySelector('#name-new').value;
 
-              // 상품 data
-              const data = product.data();
-              console.log('data', data);
-
-              // html 동적 생성
-              const template = `
-              <div class="product">
-                <div class="thumbnail" style="background-image: url(${
-                  data.image ? data.image : './500x500_01.png'
-                })"></div>
-                <div class="flex-grow-1 p-4">
-                  <h5 class="title">${data.title}</h5>
-                  <p class="date">${data.date}</p>
-                  <p class="price">${data.price}원</p>
-                  <p class="float-end">❤️ 0</p>
-                </div>
-              </div>
-              `;
-              document.querySelector('.container').innerHTML += template;
-            });
+        // 회원가입 function
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then(res => {
+            console.log('signup success', res);
+            console.log(res.user);
+            res.user.updateProfile({ displayNmae: username });
+            alert('회원가입에 성공했습니다!');
+            window.location.href = 'index.html';
           })
-          .catch(err => {
-            console.error('Firestore 에러:', err);
+          .catch(e => {
+            alert(e);
+            console.log('error', e);
           });
       });
     </script>
