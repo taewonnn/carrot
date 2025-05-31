@@ -34,17 +34,7 @@
       </div>
     </nav>
 
-    <div class="container">
-      상세페이지
-      <div class="detail-pic my-4" style="background-image: url('https://picsum.photos/400')"></div>
-      <div>
-        <h5>올린사람 : ??</h5>
-        <hr />
-        <h5 class="title">상품명</h5>
-        <p class="date">created at</p>
-        <p class="price">가격</p>
-      </div>
-    </div>
+    <div class="container"></div>
 
     <!-- Firebase 초기화 스크립트 -->
     <script>
@@ -54,6 +44,45 @@
 
     <script>
       //
+      const db = firebase.firestore();
+      const storage = firebase.storage();
+
+      // url -> 상품 ID 추출
+      const productURL = new URL(window.location.href);
+      const productId = productURL.searchParams.get('id');
+
+      // product collection
+      db.collection('products')
+        .doc(productId)
+        .get()
+        .then(res => {
+          console.log(res.data());
+          const product = res.data(); // 단일 객체
+          const documentId = res.id; // 문서 ID
+
+          // 단일 상품 데이터 처리
+          const template = `
+            <div class="container">
+              <h2>상세페이지</h2>
+              <div class="detail-pic my-4" style="background-image: url('${
+                product.image ? product.image : './500x500_01.png'
+              }'); width: 100%; height: 400px; background-size: cover; background-position: center;"></div>
+              <div>
+                <h5>상품 ID: ${documentId}</h5>
+                <hr />
+                <h5 class="title">${product.title}</h5>
+                <p class="date">등록일: ${product.date}</p>
+                <p class="price">가격: ${product.price}원</p>
+                <p class="content">설명: ${product.content}</p>
+              </div>
+            </div>
+          `;
+
+          document.querySelector('.container').innerHTML += template;
+        })
+        .catch(err => {
+          console.error('Firestore 에러:', err);
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
