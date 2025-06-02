@@ -76,7 +76,12 @@
 
     <script>
       /** login 여부 확인 */
-      firebase.auth().;
+      // login 상태가 변할 때마다 동작
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          console.log(user);
+        }
+      });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
