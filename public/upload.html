@@ -74,6 +74,8 @@
         const date = new Date().toLocaleDateString('en-CA');
         // uid
         const uid = userInfo.uid;
+        // username
+        const username = userInfo.displayName;
 
         const path = storageRef.child('image/' + Date.now() + '_' + image.name); // 고유한 파일명
         const imgUpload = path.put(image); // 업로드 작업
@@ -93,6 +95,7 @@
               date: date,
               image: downloadURL,
               uid: uid,
+              username: username,
             };
             // console
             console.log(formData);

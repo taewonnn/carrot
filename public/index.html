@@ -69,14 +69,12 @@
 
               // html 동적 생성
               const template = `
-              <div class="product">
+              <div class="product" data-href='/detail.html?id=${product.id}'>
                 <div class="thumbnail" style="background-image: url(${
                   data.image ? data.image : './500x500_01.png'
                 })"></div>
                 <div class="flex-grow-1 p-4">
-                  <a href='/detail.html?id=${product.id}'>
-                    <h5 class="title">${data.title}</h5>
-                  </a>
+                  <h5 class="title">${data.title}</h5>
                   <p class="date">${data.date}</p>
                   <p class="price">${data.price}원</p>
                   <p class="float-end">❤️ 0</p>
@@ -89,6 +87,17 @@
           .catch(err => {
             console.error('Firestore 에러:', err);
           });
+      });
+
+      // 카드 클릭 시
+      document.addEventListener('click', e => {
+        const productCard = e.target.closest('.product');
+        if (productCard) {
+          const href = productCard.getAttribute('data-href');
+          if (href) {
+            window.location.href = href;
+          }
+        }
       });
     </script>
 
