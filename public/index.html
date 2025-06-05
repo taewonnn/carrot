@@ -29,6 +29,7 @@
         <a class="signin btn btn-outline-success" href="/signin.html">로그인</a>
         <a class="signup btn btn-outline-success" href="/signup.html">회원가입</a>
         <a class="logout btn btn-outline-success d-none" href="/signup.html">로그아웃</a>
+        <a class="write-board btn btn-outline-success d-none" href="/signup.html">글쓰기</a>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
           <button class="btn btn-outline-success" type="submit">Search</button>
@@ -46,6 +47,7 @@
       firebase.initializeApp(firebaseConfig);
     </script>
 
+    <script src="./auth.js"></script>
     <script>
       // data 가져오기
       document.addEventListener('DOMContentLoaded', () => {
@@ -87,19 +89,6 @@
           .catch(err => {
             console.error('Firestore 에러:', err);
           });
-      });
-
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          // 로그인 /회원가입 버튼 없애기
-          document.querySelector('.signin').style.display = 'none';
-          document.querySelector('.signup').style.display = 'none';
-          // 로그아웃 보여주기
-          document.querySelector('.logout').classList.remove('d-none');
-
-          const userInfo = JSON.parse(localStorage.getItem('user'));
-          document.querySelector('.userName').innerHTML = userInfo.displayName;
-        }
       });
     </script>
 

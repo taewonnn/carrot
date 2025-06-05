@@ -24,7 +24,8 @@
     <!-- nav Bar -->
     <nav class="navbar bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand">Navbar</a>
+        <a class="navbar-brand">Carrot</a>
+        <span class="userName ms-auto mx-2"> </span>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
           <button class="btn btn-outline-success" type="submit">Search</button>
@@ -72,14 +73,13 @@
             alert('ID / PW 확인해주세요!');
           });
       });
-    </script>
 
-    <script>
       /** login 여부 확인 */
       // login 상태가 변할 때마다 동작
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          console.log(user);
+          console.log('user', user);
+          document.querySelector('.userName').innerHTML = user.displayName;
         }
       });
     </script>
