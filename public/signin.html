@@ -68,6 +68,8 @@
           .signInWithEmailAndPassword(email, password)
           .then(res => {
             console.log(res);
+            // localStorage에 저장
+            localStorage.setItem('user', JSON.stringify(res.user));
             window.location.href = '/';
           })
           .catch(e => {
