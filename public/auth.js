@@ -1,9 +1,13 @@
+const userInfo = JSON.parse(localStorage.getItem('user'));
+document.querySelector('.userName').innerHTML = userInfo.displayName;
+
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     // querySelector
     const signin = document.querySelector('.signin');
     const signup = document.querySelector('.signup');
     const logout = document.querySelector('.logout');
+    const writeBoard = document.querySelector('.write-board');
 
     // 현재 페이지가 로그인/회원가입 페이지인지 확인
     const currentPath = window.location.pathname;
@@ -22,14 +26,12 @@ firebase.auth().onAuthStateChanged(user => {
     // 로그인 /회원가입 버튼 없애기
     signin.style.display = 'none';
     signup.style.display = 'none';
+
     // 로그아웃 보여주기
-    document.querySelector('.logout').classList.remove('d-none');
+    logout.classList.remove('d-none');
 
     // 글쓰기 보여주기
-    document.querySelector('.write-board').classList.remove('d-none');
-
-    const userInfo = JSON.parse(localStorage.getItem('user'));
-    document.querySelector('.userName').innerHTML = userInfo.displayName;
+    writeBoard.classList.remove('d-none');
   }
 });
 
