@@ -1,5 +1,11 @@
 const userInfo = JSON.parse(localStorage.getItem('user'));
-document.querySelector('.userName').innerHTML = userInfo.displayName;
+
+if (userInfo && document.querySelector('.userName')) {
+  document.querySelector('.userName').innerHTML = userInfo.displayName;
+}
+
+// 현재 페이지가 로그인/회원가입 페이지인지 확인
+const currentPath = window.location.pathname;
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
@@ -8,9 +14,6 @@ firebase.auth().onAuthStateChanged(user => {
     const signup = document.querySelector('.signup');
     const logout = document.querySelector('.logout');
     const writeBoard = document.querySelector('.write-board');
-
-    // 현재 페이지가 로그인/회원가입 페이지인지 확인
-    const currentPath = window.location.pathname;
 
     // 로그인된 상태에서 로그인/회원가입 페이지 접근 시 메인으로 리다이렉트
     if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
@@ -32,6 +35,12 @@ firebase.auth().onAuthStateChanged(user => {
 
     // 글쓰기 보여주기
     writeBoard.classList.remove('d-none');
+  } else {
+    // 로그인X 상태에서 업로드 페이지 접근 시 메인으로 리다이렉트
+    if (currentPath.includes('upload.html')) {
+      window.location.href = '/signin.html';
+      return; // 리다이렉트 후 아래 코드 실행 방지
+    }
   }
 });
 
