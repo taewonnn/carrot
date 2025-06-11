@@ -37,7 +37,20 @@
       </div>
     </nav>
 
-    <div class="container"></div>
+    <div class="container mt-5">
+      제목: <input class="title" /><br />
+
+      이미지:
+      <div class="imgae-container">
+        <img src="" alt="" class="image w-[500px] h-[500px]" />
+      </div>
+      <input class="img-file" type="file" /><br />
+      등록일: <input class="date" disabled /><br />
+      가격: <input class="price" /> <br />
+      설명: <input class="content" />
+    </div>
+
+    <button type="submit" class="btn btn-outline-success">수정하기</button>
 
     <!-- Firebase 초기화 스크립트 -->
     <script>
@@ -57,46 +70,20 @@
 
       console.log('Product ID:', productId); // 디버깅용
 
-      // product collection
+      // product collection -> 특정 id 값에 대한 데이터
       db.collection('products')
         .doc(productId)
         .get()
-        .then(res => {
-          console.log(res.data());
+        .then(prd => {
+          console.log(prd.data());
+          const editProduct = prd.data();
 
-          if (res.exists) {
-            const product = res.data(); // 단일 객체
-            const documentId = res.id; // 문서 ID
-
-            // 단일 상품 데이터 처리 (배열이 아님!)
-            const template = `
-              <div class="container">
-                <h2>상세페이지</h2>
-                <button class="btn btn-outline-success">수정</button>
-                <div class="detail-pic my-4" style="background-image: url('${
-                  product.image ? product.image : './500x500_01.png'
-                }'); width: 100%; height: 400px; background-size: cover; background-position: center;"></div>
-                <div>
-                  <h5>상품 ID: ${documentId}</h5>
-                  <hr />
-                  <h5 class="title">${product.title}</h5>
-                  <p class="date">등록일: ${product.date}</p>
-                  <p class="price">가격: ${product.price}원</p>
-                  <p class="content">설명: ${product.content}</p>
-                </div>
-              </div>
-            `;
-
-            document.querySelector('.container').innerHTML = template;
-          } else {
-            window.location.href = '/';
-            document.querySelector('.container').innerHTML = '<p>상품을 찾을 수 없습니다.</p>';
-          }
-        })
-        .catch(err => {
-          console.error('Firestore 에러:', err);
-          document.querySelector('.container').innerHTML =
-            '<p>데이터를 불러오는 중 오류가 발생했습니다.</p>';
+          document.querySelector('.title').value = editProduct.title;
+          document.querySelector('.image').src = editProduct.image;
+          document.querySelector('.img-file').data = editProduct.image;
+          document.querySelector('.date').value = editProduct.date;
+          document.querySelector('.price').value = editProduct.title;
+          document.querySelector('.content').value = editProduct.content;
         });
     </script>
 
