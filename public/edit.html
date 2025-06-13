@@ -75,8 +75,8 @@
         .doc(productId)
         .get()
         .then(prd => {
-          console.log(prd.data());
           const editProduct = prd.data();
+          console.log(editProduct);
 
           document.querySelector('.title').value = editProduct.title;
           document.querySelector('.image').src = editProduct.image;
