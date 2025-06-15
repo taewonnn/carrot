@@ -81,13 +81,32 @@
           document.querySelector('.title').value = editProduct.title;
           document.querySelector('.image').src = editProduct.image;
           document.querySelector('.date').value = editProduct.date;
-          document.querySelector('.price').value = editProduct.title;
+          document.querySelector('.price').value = editProduct.price;
           document.querySelector('.content').value = editProduct.content;
         });
 
       // 수정 버튼 클릭 시
       document.querySelector('.edit-btn').addEventListener('click', () => {
-        alert('!');
+        var editData = {
+          title: document.querySelector('.title').value,
+          image: document.querySelector('.image').src,
+          price: document.querySelector('.price').value,
+          date: new Date().toLocaleDateString('en-CA'),
+        };
+
+        // update
+        db.collection('products')
+          .doc(productId)
+          .update(editData)
+          .then(() => {
+            console.log('✅ 업데이트 성공!');
+            alert('수정이 완료되었습니다!');
+            window.location.href = `/detail.html?id=${productId}`;
+          })
+          .catch(error => {
+            console.error('❌ 업데이트 실패:', error);
+            alert('수정 실패: ' + error.message);
+          });
       });
     </script>
 
