@@ -90,6 +90,7 @@
             document.querySelector('.container').innerHTML = template;
 
             const uid = JSON.parse(localStorage.getItem('user')).uid;
+
             // 수정 버튼
             if (uid === product.uid) {
               const editBtn = document.querySelector('.edit');
