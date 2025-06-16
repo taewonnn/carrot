@@ -57,7 +57,7 @@
       const db = firebase.firestore();
       const storage = firebase.storage();
 
-      document.querySelector('#register').addEventListener('click', () => {
+      document.querySelector('#register').addEventListener('click', async () => {
         console.log('register click!');
         // email
         const email = document.querySelector('#email-new').value;
@@ -67,25 +67,33 @@
         const username = document.querySelector('#name-new').value;
 
         // 회원가입 function
-        firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, password)
-          .then(res => {
-            console.log('signup success', res);
-            return res.user.updateProfile({ displayName: username });
-          })
-          .then(() => {
-            const currentUser = firebase.auth().currentUser;
-            console.log('Updated user:', currentUser);
-            console.log('Display Name:', currentUser.displayName);
+        try {
+          const res = await firebase.auth().createUserWithEmailAndPassword(email, password);
+          console.log(res);
 
-            alert('회원가입에 성공했습니다!');
-            window.location.href = 'index.html';
-          })
-          .catch(e => {
-            alert(e);
-            console.log('error', e);
-          });
+          const userData = {
+            name: username,
+            email: email,
+            uid: res.user.uid,
+            createdAt: new Date().toLocaleDateString('en-CA'),
+          };
+
+          await db.collection('user').doc(res.user.uid).set(userData);
+          console.log('✅ fireStore 저장');
+
+          await res.user.updateProfile({ displayName: username });
+          console.log('✅ 프로필 업데이트 성공');
+
+          const currentUser = firebase.auth().currentUser;
+          console.log('Updated user:', currentUser);
+          console.log('Display Name:', currentUser.displayName);
+
+          alert('✅ 회원가입에 성공했습니다!');
+          window.location.href = 'index.html';
+        } catch (e) {
+          alert(`❌가입에 실패했습니다: ${e.message}`);
+          console.log('error', e);
+        }
       });
     </script>
 

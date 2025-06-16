@@ -16,9 +16,9 @@ firebase.auth().onAuthStateChanged(user => {
     const writeBoard = document.querySelector('.write-board');
 
     // 로그인된 상태에서 로그인/회원가입 페이지 접근 시 메인으로 리다이렉트
-    if (currentPath.includes('signin.html') || currentPath.includes('signup.html')) {
+    if (currentPath.includes('signin.html')) {
       window.location.href = '/';
-      return; // 리다이렉트 후 아래 코드 실행 방지
+      return;
     }
 
     // 로그아웃
