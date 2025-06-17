@@ -107,6 +107,19 @@
               return;
             }
 
+            const existingChatRoom = await db
+              .collection('chatroom')
+              .where('productId', '==', productId)
+              .where('from', '==', currentUser.uid)
+              .get();
+
+            if (!existingChatRoom.empty) {
+              const chatRoomId = existingChatRoom.docs[0].id;
+              console.log('중복임! chatRoomId', chatRoomId);
+              // window.location.href = `/chat.html?roomId=${chatRoomId}`;
+              return;
+            }
+
             const chatData = {
               from: currentUser.uid, // 채팅 건 사람
               fromName: currentUser.displayName,
