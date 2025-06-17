@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Carrot details</title>
+    <title>Carrot chat</title>
 
     <!-- Firebase SDK를 CDN에서 직접 로드 -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -51,42 +51,9 @@
       const db = firebase.firestore();
       const storage = firebase.storage();
 
-      // url -> 상품 ID 추출
-      const productURL = new URL(window.location.href);
-      const productId = productURL.searchParams.get('id');
-
-      // 상품 상세 정보 렌더링 함수
-      function renderProductDetail(product, documentId) {
-        const template = `
-          <div class="container">
-            <h2>상세페이지</h2>
-            <a class="edit btn btn-outline-success d-none" href="/edit.html?id=${documentId}">수정</a>
-            <div class="detail-pic my-4" style="background-image: url('${
-              product.image ? product.image : './500x500_01.png'
-            }'); width: 100%; height: 400px; background-size: cover; background-position: center;"></div>
-            <div>
-              <p>작성자: ${product.username}</p>
-              <button class="chat btn btn-outline-secondary">채팅</button>
-              <hr />
-              <h5 class="title">${product.title}</h5>
-              <p class="date">등록일: ${product.date}</p>
-              <p class="price">금액: ${product.price}원</p>
-              <p class="content">${product.content}</p>
-            </div>
-          </div>
-        `;
-
-        document.querySelector('.container').innerHTML = template;
-
-        // 수정 버튼 표시 (본인 상품인 경우)
-        const currentUser = JSON.parse(localStorage.getItem('user'));
-        if (currentUser && currentUser.uid === product.uid) {
-          const editBtn = document.querySelector('.edit');
-          if (editBtn) {
-            editBtn.classList.remove('d-none');
-          }
-        }
-      }
+      // url -> chat ID 추출
+      const chatURL = new URL(window.location.href);
+      const chatId = chatURL.searchParams.get('id');
 
       // 채팅 기능 함수
       function setupChatButton(product, productId) {
@@ -130,8 +97,8 @@
         });
       }
 
-      // product collection - 상품 렌더 + 채팅
-      db.collection('products')
+      // user collection
+      db.collection('user')
         .doc(productId)
         .get()
         .then(res => {
@@ -140,11 +107,6 @@
           if (res.exists) {
             const product = res.data(); // 단일 객체
             const documentId = res.id; // 문서 ID
-
-            console.log('product data', product);
-
-            // 상품 상세 렌더링
-            renderProductDetail(product, documentId);
 
             // 채팅 버튼 설정
             setupChatButton(product, productId);
