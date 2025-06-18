@@ -116,7 +116,7 @@
             if (!existingChatRoom.empty) {
               const chatRoomId = existingChatRoom.docs[0].id;
               console.log('중복임! chatRoomId', chatRoomId);
-              // window.location.href = `/chat.html?roomId=${chatRoomId}`;
+              window.location.href = `/chat.html`;
               return;
             }
 
@@ -136,7 +136,7 @@
             const chatRoom = await db.collection('chatroom').add(chatData);
             console.log('success');
             alert('채팅룸 생성');
-            // window.location.href = `/caht.html/?roomId={chatRoom.id}`;
+            window.location.href = `/caht.html`;
           } catch (e) {
             console.log('❌ 채팅룸 생성 오류', e);
           }

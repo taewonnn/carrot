@@ -40,12 +40,7 @@
     <div class="container p-4 detail">
       <div class="row">
         <div class="col-3 p-0">
-          <ul class="list-group chat-list">
-            <li class="list-group-item">
-              <h6>채팅방1</h6>
-              <h6 class="text-small">채팅방아이디</h6>
-            </li>
-          </ul>
+          <ul class="list-group chat-list"></ul>
         </div>
         <div class="col-9 p-0">
           <div class="chat-room">
@@ -75,71 +70,61 @@
       const db = firebase.firestore();
       const storage = firebase.storage();
 
-      // url -> chat ID 추출
-      const chatURL = new URL(window.location.href);
-      const chatId = chatURL.searchParams.get('id');
+      // localstorage 유저 정보
+      const currentUser = userInfo;
 
-      // 채팅 기능 함수
-      function setupChatButton(product, productId) {
-        const chatButton = document.querySelector('.chat');
-        if (!chatButton) return;
+      // 일치하는 채팅 목록
+      db.collection('chatroom')
+        .where('from', '==', currentUser.uid)
+        .onSnapshot(snapshot => {
+          const chatRooms = [];
+          snapshot.forEach(doc => {
+            chatRooms.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          });
 
-        chatButton.addEventListener('click', async () => {
-          try {
-            const currentUser = JSON.parse(localStorage.getItem('user'));
+          console.log(chatRooms);
+          // 채팅방 목록 렌더링
+          const chatList = document.querySelector('.chat-list');
+          chatList.innerHTML = chatRooms
+            .map(
+              chat => `
+            <div class="chat-item" data-id="${chat.id}">
+              <li class="list-group-item">
+                <h6 class="chatRoomTitle"></h6>
+                <h6 class="chatRoomId text-small">${chat.productTitle}</h6>
+                <h6 class="chatTarget text-small">상대방: ${chat.toName}</h6>
+              </li>
+            </div>
+          `,
+            )
+            .join('');
 
-            if (!currentUser) {
-              window.location.href = 'signin.html';
-              return;
-            }
-
-            if (currentUser.uid === product.uid) {
-              alert('본인과 채팅은 불가!');
-              return;
-            }
-
-            const chatData = {
-              from: currentUser.uid, // 채팅 건 사람
-              fromName: currentUser.displayName,
-              to: product.uid,
-              toName: product.username,
-              productId: productId,
-              productTitle: product.title,
-              createdAt: new Date().toISOString(),
-              lastMessage: '',
-              lastMessageTime: new Date().toISOString(),
-            };
-
-            // 채팅 룸 생성
-            const chatRoom = await db.collection('chatroom').add(chatData);
-            console.log('success');
-            alert('채팅룸 생성');
-            // window.location.href = `/caht.html/?roomId={chatRoom.id}`;
-          } catch (e) {
-            console.log('❌ 채팅룸 생성 오류', e);
-          }
+          // 채팅방 클릭 이벤트
+          document.querySelectorAll('.chat-item').forEach(item => {
+            item.addEventListener('click', () => {
+              const chatId = item.dataset.id;
+              loadMessages(chatId);
+            });
+          });
         });
+
+      // 메시지 로드 함수
+      function loadMessages(chatId) {
+        db.collection('chatroom')
+          .doc(chatId)
+          .collection('messages')
+          .orderBy('createdAt')
+          .onSnapshot(snapshot => {
+            const messages = [];
+            snapshot.forEach(doc => {
+              messages.push(doc.data());
+            });
+            renderMessages(messages);
+          });
       }
-
-      // user collection
-      db.collection('user')
-        .doc(productId)
-        .get()
-        .then(res => {
-          console.log(res.data());
-
-          if (res.exists) {
-            const product = res.data(); // 단일 객체
-            const documentId = res.id; // 문서 ID
-
-            // 채팅 버튼 설정
-            setupChatButton(product, productId);
-          } else {
-            setTimeout(() => {
-              window.location.href = '/';
-            }, 2000);
-          }
-        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
