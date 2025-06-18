@@ -86,7 +86,7 @@
         const savedChatRoomId = sessionStorage.getItem('chatRoomId');
         if (savedChatRoomId) {
           // 사용 후 삭제
-          // sessionStorage.removeItem('selectedChatRoomId');
+          sessionStorage.removeItem('chatRoomId');
 
           // chatrooms가 로드되면 해당 채팅방 선택
           const checkAndSelectRoom = setInterval(() => {
@@ -97,6 +97,10 @@
             }
           }, 100);
         }
+      });
+
+      window.addEventListener('unload', () => {
+        sessionStorage.removeItem('chatRoomId');
       });
 
       function updateAndRenderChatList() {
