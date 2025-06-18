@@ -82,6 +82,23 @@
 
       const chatrooms = {}; // id로 중복 방지
 
+      window.addEventListener('load', () => {
+        const savedChatRoomId = sessionStorage.getItem('chatRoomId');
+        if (savedChatRoomId) {
+          // 사용 후 삭제
+          // sessionStorage.removeItem('selectedChatRoomId');
+
+          // chatrooms가 로드되면 해당 채팅방 선택
+          const checkAndSelectRoom = setInterval(() => {
+            if (chatrooms[savedChatRoomId]) {
+              currentChatId = savedChatRoomId;
+              loadMessages(savedChatRoomId);
+              clearInterval(checkAndSelectRoom);
+            }
+          }, 100);
+        }
+      });
+
       function updateAndRenderChatList() {
         const chatRoomArr = Object.values(chatrooms);
         renderChatList(chatRoomArr);
