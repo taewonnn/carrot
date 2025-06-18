@@ -44,11 +44,7 @@
         </div>
         <div class="col-9 p-0">
           <div class="chat-room">
-            <ul class="list-group chat-content">
-              <li><span class="chat-box">채팅방1 내용</span></li>
-              <li><span class="chat-box">채팅방1 내용</span></li>
-              <li><span class="chat-box mine">채팅방1 내용</span></li>
-            </ul>
+            <ul class="list-group chat-content"></ul>
             <div class="input-group">
               <input class="form-control" id="chat-input" />
               <button class="btn btn-secondary" id="send">전송</button>
@@ -70,45 +66,54 @@
       const db = firebase.firestore();
       const storage = firebase.storage();
 
+      let currentChatId = null; // 전역 변수로 현재 채팅방 id 저장
+
+      document.querySelector('.chat-list').addEventListener('click', function (e) {
+        const item = e.target.closest('.chat-item');
+        if (item) {
+          const chatId = item.dataset.id;
+          currentChatId = chatId;
+          loadMessages(chatId);
+        }
+      });
+
       // localstorage 유저 정보
       const currentUser = userInfo;
 
-      // 일치하는 채팅 목록
+      const chatrooms = {}; // id로 중복 방지
+
+      function updateAndRenderChatList() {
+        const chatRoomArr = Object.values(chatrooms);
+        renderChatList(chatRoomArr);
+
+        // 자동 선택
+        if (chatRoomArr.length > 0) {
+          const firstChatId = chatRoomArr[0].id;
+          if (currentChatId !== firstChatId) {
+            currentChatId = firstChatId;
+            loadMessages(firstChatId);
+          }
+        }
+      }
+
+      // from 쿼리
       db.collection('chatroom')
         .where('from', '==', currentUser.uid)
         .onSnapshot(snapshot => {
-          const chatRooms = [];
           snapshot.forEach(doc => {
-            chatRooms.push({
-              id: doc.id,
-              ...doc.data(),
-            });
+            chatrooms[doc.id] = { id: doc.id, ...doc.data() };
           });
+          updateAndRenderChatList();
+        });
 
-          console.log(chatRooms);
-          // 채팅방 목록 렌더링
-          const chatList = document.querySelector('.chat-list');
-          chatList.innerHTML = chatRooms
-            .map(
-              chat => `
-            <div class="chat-item" data-id="${chat.id}">
-              <li class="list-group-item">
-                <h6 class="chatRoomTitle"></h6>
-                <h6 class="chatRoomId text-small">${chat.productTitle}</h6>
-                <h6 class="chatTarget text-small">상대방: ${chat.toName}</h6>
-              </li>
-            </div>
-          `,
-            )
-            .join('');
-
-          // 채팅방 클릭 이벤트
-          document.querySelectorAll('.chat-item').forEach(item => {
-            item.addEventListener('click', () => {
-              const chatId = item.dataset.id;
-              loadMessages(chatId);
-            });
+      // to 쿼리
+      db.collection('chatroom')
+        .where('to', '==', currentUser.uid)
+        .onSnapshot(snapshot => {
+          snapshot.forEach(doc => {
+            chatrooms[doc.id] = { id: doc.id, ...doc.data() };
           });
+          updateAndRenderChatList();
         });
 
       // 메시지 로드 함수
@@ -124,6 +129,67 @@
             });
             renderMessages(messages);
           });
+      }
+
+      // 새 메시지 보내기 함수
+      function sendMessage(chatId, message) {
+        const messageData = {
+          message,
+          createdAt: new Date().toISOString(),
+          from: currentUser.uid,
+          to: chatId,
+        };
+
+        db.collection('chatroom').doc(chatId).collection('messages').add(messageData);
+      }
+
+      // 메시지 전송 버튼 클릭
+      document.querySelector('#send').addEventListener('click', e => {
+        const message = document.querySelector('#chat-input').value;
+        if (currentChatId) {
+          console.log('currentChatId', currentChatId);
+          sendMessage(currentChatId, message);
+        } else {
+          alert('채팅방을 먼저 선택하세요!');
+        }
+      });
+
+      // 메시지 렌더 함수
+      function renderMessages(messages) {
+        const messageList = document.querySelector('.chat-content');
+        if (!messageList) return;
+
+        //console.log('messages', messages);
+        messageList.innerHTML = messages
+          .map(msg => {
+            const isMine = msg.from === currentUser.uid;
+            return `
+            <li>
+              <span class="chat-box${isMine ? ' mine' : ''}">
+                ${msg.text || msg.message}
+                <div class="text-end text-muted" style="font-size:11px;">
+                  ${msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}
+                </div>
+              </span>
+            </li>
+          `;
+          })
+          .join('');
+      }
+
+      // 채팅방 목록을 렌더링하는 함수
+      function renderChatList(chatRooms) {
+        const chatList = document.querySelector('.chat-list');
+        chatList.innerHTML = chatRooms
+          .map(
+            chat => `
+          <li class="list-group-item chat-item" data-id="${chat.id}">
+            <strong>${chat.productTitle}</strong><br>
+            <span>상대방: ${chat.toName}</span>
+          </li>
+        `,
+          )
+          .join('');
       }
     </script>
 

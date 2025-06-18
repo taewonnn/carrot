@@ -83,7 +83,8 @@ product {
   padding: 10px;
 }
 .chat-content li {
-  margin-top: 10px;
+  list-style: none;
+  clear: both;
 }
 .text-small {
   font-size: 12px;
@@ -91,11 +92,15 @@ product {
   margin-bottom: 0;
 }
 .chat-box {
-  background: #eee;
-  padding: 5px;
-  border-radius: 5px;
-  float: left;
+  display: inline-block;
+  background: #f1f1f1;
+  border-radius: 12px;
+  padding: 8px 14px;
+  margin: 4px 0;
+  max-width: 70%;
 }
-.mine {
+.chat-box.mine {
+  background: #d1e7dd;
   float: right;
+  text-align: right;
 }
