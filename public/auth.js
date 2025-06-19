@@ -14,6 +14,7 @@ firebase.auth().onAuthStateChanged(user => {
     const signup = document.querySelector('.signup');
     const logout = document.querySelector('.logout');
     const writeBoard = document.querySelector('.write-board');
+    const chat = document.querySelector('.chat');
 
     // 로컬스토리지에 사용자 정보 저장
     const userData = {
@@ -48,6 +49,9 @@ firebase.auth().onAuthStateChanged(user => {
 
     // 글쓰기 보여주기
     writeBoard.classList.remove('d-none');
+
+    // 채팅 보여주기
+    chat.classList.remove('d-none');
   } else {
     localStorage.removeItem('user');
 
