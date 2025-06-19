@@ -105,6 +105,7 @@
 
       function updateAndRenderChatList() {
         const chatRoomArr = Object.values(chatrooms);
+        console.log('chatRoomArr', chatRoomArr);
         renderChatList(chatRoomArr);
 
         // 자동 선택
@@ -142,7 +143,8 @@
         db.collection('chatroom')
           .doc(chatId)
           .collection('messages')
-          .orderBy('createdAt')
+          .orderBy('createdAt') // 정렬
+          // 실시간 DB 반영 -> onSnapshot 사용
           .onSnapshot(snapshot => {
             const messages = [];
             snapshot.forEach(doc => {
